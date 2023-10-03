@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/MyTheme.dart';
-import 'package:todo/SettingTap.dart';
-import 'package:todo/TasksTap.dart';
+import 'package:todo/mainTap/TasksTap.dart';
+import 'package:todo/mainTap/toAddWidget.dart';
+import 'package:todo/settings/SettingTap.dart';
+
 import 'package:todo/providers/AppConfigProvider.dart';
-import 'package:todo/toAddWidget.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/LangwageBottomSheet.dart';
-import 'package:todo/ModeBottomSheet.dart';
+import 'package:todo/settings/LangwageBottomSheet.dart';
+import 'package:todo/settings/ModeBottomSheet.dart';
 import 'package:todo/MyTheme.dart';
 import 'package:todo/providers/AppConfigProvider.dart';
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/FireBaseMethod.dart';
 import 'package:todo/MyTheme.dart';
+import 'package:todo/Task.dart';
 import 'package:todo/providers/AppConfigProvider.dart';
 
 class EditTask extends StatefulWidget {
@@ -14,10 +16,17 @@ class EditTask extends StatefulWidget {
 
 class _EditTaskState extends State<EditTask> {
   DateTime selectedDatee = DateTime.now();
+  String task='';
+  String desc='';
+
+
+
   @override
   Widget build(BuildContext context) {
+    Task passedTask= ModalRoute.of(context)?.settings.arguments as Task;
     var provider = Provider.of<AppConfigProvider>(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.toDoList,
@@ -45,6 +54,9 @@ class _EditTaskState extends State<EditTask> {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextFormField(
+                onChanged: (text){
+                   task=text;
+                },
                 decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.taskName,
                     hintStyle: TextStyle(
@@ -56,6 +68,10 @@ class _EditTaskState extends State<EditTask> {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextFormField(
+                onChanged: (text){
+
+                   desc=text;
+                },
                 decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.describtion,
                     hintStyle: TextStyle(
@@ -88,7 +104,19 @@ class _EditTaskState extends State<EditTask> {
                   horizontal: MediaQuery.of(context).size.height * 0.05,
                   vertical: MediaQuery.of(context).size.height * 0.05),
               child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if(task!=""){
+                      FireBaseMethods.getTasksCollection().doc(passedTask.id).update({"title":task});
+                    }
+                    if(desc!=""){
+                      FireBaseMethods.getTasksCollection().doc(passedTask.id).update({"desc":desc});
+                    }
+                    if(selectedDatee?.millisecondsSinceEpoch!=passedTask.dateTime){
+                      FireBaseMethods.getTasksCollection().doc(passedTask.id).update({"dateTime":selectedDatee?.millisecondsSinceEpoch});
+                    }
+                    provider.getTasksFromFireBase();
+                    Navigator.pop(context);
+                  },
                   child: Text(
                     AppLocalizations.of(context)!.saveChanges,
                     style: TextStyle(fontSize: 20),
