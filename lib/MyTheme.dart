@@ -6,6 +6,7 @@ class MyTheme {
   static Color whiteColor = Color(0xffFFFFFF);
   static Color darkBgColor = Color(0xff060E1E);
   static Color darkGrey = Color(0xff141922);
+  static Color greenColor=Color(0xff61E757);
   static ThemeData lighTheme = ThemeData(
       primaryColor: primartight,
       appBarTheme: AppBarTheme(elevation: 0),
