@@ -5,6 +5,7 @@ import 'package:todo/FireBaseMethod.dart';
 import 'package:todo/MyTheme.dart';
 import 'package:todo/Task.dart';
 import 'package:todo/providers/AppConfigProvider.dart';
+import 'package:todo/providers/AuthProvider.dart';
 
 class ToAddWidget extends StatefulWidget {
   @override
@@ -13,13 +14,20 @@ class ToAddWidget extends StatefulWidget {
 
 class _ToAddWidgetState extends State<ToAddWidget> {
   final formKey = GlobalKey<FormState>();
-  DateTime selectedDatee = DateTime.now();
+  //late DateTime selectedDatee;
   String enteredTitle = "";
   String enteredDes = "";
+  var provider;
+
+ DateTime selectedDatee=DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AppConfigProvider>(context);
+
+    var authprovider= Provider.of<AuthProvider>(context);
+    provider = Provider.of<AppConfigProvider>(context);
+
+
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -81,7 +89,7 @@ class _ToAddWidgetState extends State<ToAddWidget> {
                 showCalendar();
               },
               child: Text(
-                "${selectedDatee.day}/${selectedDatee.month}/${selectedDatee.year}",
+                "${selectedDatee?.day}/${selectedDatee?.month}/${selectedDatee?.year}",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 16,
@@ -100,12 +108,12 @@ class _ToAddWidgetState extends State<ToAddWidget> {
                         dateTime: selectedDatee,
                         title: enteredTitle,
                         desc: enteredDes);
-                    FireBaseMethods.addTaskToFireStore(task)
-                        .timeout(Duration(milliseconds: 500), onTimeout: () {
-                          print("task added");
-                          provider.getTasksFromFireBase();
-                          Navigator.pop(context);
-                    });
+                    FireBaseMethods.addTaskToFireStore(task,authprovider.user?.id??"")
+                        .then((value){
+                        return provider.getTasksFromFireBase(authprovider.user?.id??"");
+                        });
+                    Navigator.pop(context);
+                    print("task added");
                   }
                 },
                 child: Text(
@@ -119,14 +127,16 @@ class _ToAddWidgetState extends State<ToAddWidget> {
   }
 
   void showCalendar() async {
+
     var selectedDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: provider.selectedDate,
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365)));
     if (selectedDate != null) {
       selectedDatee = selectedDate;
     }
+
     setState(() {});
   }
 }

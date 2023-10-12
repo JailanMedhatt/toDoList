@@ -6,6 +6,7 @@ import 'package:todo/Task.dart';
 
 import 'package:todo/mainTap/TaskContainer.dart';
 import 'package:todo/providers/AppConfigProvider.dart';
+import 'package:todo/providers/AuthProvider.dart';
 
 
 
@@ -20,10 +21,11 @@ class TaskTap extends StatefulWidget {
 class _TaskTapState extends State<TaskTap> {
   @override
   Widget build(BuildContext context) {
+    var authprovider= Provider.of<AuthProvider>(context);
 
     var provider= Provider.of<AppConfigProvider>(context);
     if(provider.tasks.isEmpty){
-      provider.getTasksFromFireBase();
+      provider.getTasksFromFireBase(authprovider.user?.id??"");
     }
 
 
@@ -35,7 +37,7 @@ class _TaskTapState extends State<TaskTap> {
             initialDate: provider.selectedDate,
             firstDate: DateTime.now().subtract(Duration(days: 365)),
             lastDate: DateTime.now().add(Duration(days: 365)),
-            onDateSelected: (date) => {provider.changeSelectedDate(date)},
+            onDateSelected: (date) => {provider.changeSelectedDate(date, authprovider.user?.id??"")},
             leftMargin: 20,
             monthColor: Color(0xff363636),
             dayColor: Color(0xff363636),

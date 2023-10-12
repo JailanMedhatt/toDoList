@@ -1,5 +1,8 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/FireBaseMethod.dart';
 import 'package:todo/Task.dart';
 
@@ -9,19 +12,23 @@ class AppConfigProvider extends ChangeNotifier {
 
   String language = "en";
   ThemeMode themeMode = ThemeMode.light;
-  void changeLanguage(String newLan) {
+  void changeLanguage(String newLan) async {
     if (newLan == language) {
       return;
     }
     language = newLan;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("language", language);
     notifyListeners();
   }
 
-  void changeTheme(ThemeMode newTheme) {
+  void changeTheme(ThemeMode newTheme) async{
     if (newTheme == themeMode) {
       return;
     }
     themeMode = newTheme;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool("isDarkThemeMode", isDark());
     notifyListeners();
   }
 
@@ -29,9 +36,9 @@ class AppConfigProvider extends ChangeNotifier {
     return themeMode == ThemeMode.dark;
   }
 
-  void getTasksFromFireBase() async {
+  void getTasksFromFireBase(String id) async {
     QuerySnapshot<Task> querySnapshot =
-        await FireBaseMethods.getTasksCollection().get();
+        await FireBaseMethods.getTasksCollection(id).get();
     tasks = querySnapshot.docs.map((doc) => doc.data()).toList();
     tasks = tasks.where((task) {
       if (task.dateTime!.day == selectedDate.day &&
@@ -49,8 +56,8 @@ class AppConfigProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeSelectedDate(DateTime newDate) {
+  void changeSelectedDate(DateTime newDate, String id) {
     selectedDate = newDate;
-    getTasksFromFireBase();
+    getTasksFromFireBase(id);
   }
 }
