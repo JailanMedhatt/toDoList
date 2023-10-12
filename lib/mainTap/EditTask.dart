@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/FireBaseMethod.dart';
 import 'package:todo/MyTheme.dart';
+import 'package:todo/Task.dart';
 import 'package:todo/providers/AppConfigProvider.dart';
+import 'package:todo/providers/AuthProvider.dart';
 
 class EditTask extends StatefulWidget {
   static const routeName = "editTsk";
@@ -13,11 +16,25 @@ class EditTask extends StatefulWidget {
 }
 
 class _EditTaskState extends State<EditTask> {
-  DateTime selectedDatee = DateTime.now();
+  final titleController= TextEditingController();
+  final descController= TextEditingController();
+
+  late DateTime selectedDatee=DateTime.now();
+  String task='';
+  String desc='';
+
+
+
   @override
   Widget build(BuildContext context) {
+    var authprovider= Provider.of<AuthProvider>(context);
+    Task passedTask= ModalRoute.of(context)?.settings.arguments as Task;
+    titleController.text=passedTask.title??"";
+    descController.text=passedTask.desc??"";
+    selectedDatee=passedTask.dateTime!;
     var provider = Provider.of<AppConfigProvider>(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
           AppLocalizations.of(context)!.toDoList,
@@ -45,17 +62,28 @@ class _EditTaskState extends State<EditTask> {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextFormField(
+                controller: titleController,
+                onChanged: (text){
+                   task=text;
+                },
                 decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.taskName,
                     hintStyle: TextStyle(
                         color: provider.isDark()
                             ? Color.fromRGBO(205, 202, 202, 0.91)
-                            : null)),
+                            : null,
+
+                    )),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextFormField(
+                controller: descController,
+                onChanged: (text){
+
+                   desc=text;
+                },
                 decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.describtion,
                     hintStyle: TextStyle(
@@ -72,7 +100,8 @@ class _EditTaskState extends State<EditTask> {
             ),
             InkWell(
                 onTap: () {
-                  showCalendar();
+                  showCalendar(passedTask);
+
                 },
                 child: Text(
                   "${selectedDatee.day}/${selectedDatee.month}/${selectedDatee.year}",
@@ -88,7 +117,19 @@ class _EditTaskState extends State<EditTask> {
                   horizontal: MediaQuery.of(context).size.height * 0.05,
                   vertical: MediaQuery.of(context).size.height * 0.05),
               child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if(task!=""){
+                      FireBaseMethods.getTasksCollection(authprovider.user?.id??"").doc(passedTask.id).update({"title":task}).timeout(Duration(milliseconds: 500));
+                    }
+                    if(desc!=""){
+                      FireBaseMethods.getTasksCollection(authprovider.user?.id??"").doc(passedTask.id).update({"desc":desc}).timeout(Duration(milliseconds: 500));
+                    }
+                    if(selectedDatee?.millisecondsSinceEpoch!=passedTask.dateTime){
+                      FireBaseMethods.getTasksCollection(authprovider.user?.id??"").doc(passedTask.id).update({"dateTime":selectedDatee?.millisecondsSinceEpoch}).timeout(Duration(milliseconds: 500));
+                    }
+                    provider.getTasksFromFireBase(authprovider.user?.id??"");
+                    Navigator.pop(context);
+                  },
                   child: Text(
                     AppLocalizations.of(context)!.saveChanges,
                     style: TextStyle(fontSize: 20),
@@ -105,14 +146,17 @@ class _EditTaskState extends State<EditTask> {
     );
   }
 
-  void showCalendar() async {
+  void showCalendar(Task t) async {
     var selectedDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
+        initialDate: selectedDatee,
         firstDate: DateTime.now(),
         lastDate: DateTime.now().add(Duration(days: 365)));
     if (selectedDate != null) {
       selectedDatee = selectedDate;
+      t.dateTime=selectedDate;
+
+
     }
     setState(() {});
   }
