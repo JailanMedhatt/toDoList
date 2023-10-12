@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/FireBaseMethod.dart';
-import 'package:todo/Task.dart';
+import 'package:todo/models/Task.dart';
 import 'package:todo/mainTap/EditTask.dart';
 import 'package:todo/MyTheme.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
