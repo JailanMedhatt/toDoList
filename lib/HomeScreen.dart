@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todo/Login.dart';
 import 'package:todo/MyTheme.dart';
 import 'package:todo/mainTap/TasksTap.dart';
 import 'package:todo/mainTap/toAddWidget.dart';
+import 'package:todo/providers/AuthProvider.dart';
 import 'package:todo/settings/SettingTap.dart';
 
 import 'package:todo/providers/AppConfigProvider.dart';
@@ -25,12 +27,21 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     var provider=Provider.of<AppConfigProvider>(context);
+    var authprovider=Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
           selectedIndex==0?AppLocalizations.of(context)!.toDoList:AppLocalizations.of(context)!.settings,
           style:Theme.of(context).textTheme.titleLarge,
         ),
+        actions: [
+          IconButton(onPressed: (){
+            authprovider.user=null;
+            provider.tasks=[];
+            provider.selectedDate=DateTime.now();
+            Navigator.of(context).pushReplacementNamed(Login.routeName);
+          }, icon: Icon(Icons.logout))
+        ],
       ),
       bottomNavigationBar: BottomAppBar(
         color: provider.isDark()?MyTheme.darkGrey:MyTheme.whiteColor,

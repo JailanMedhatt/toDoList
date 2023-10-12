@@ -7,6 +7,7 @@ import 'package:todo/MyTheme.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:todo/providers/AppConfigProvider.dart';
+import 'package:todo/providers/AuthProvider.dart';
 
 class TaskContainer extends StatefulWidget {
   Task task;
@@ -19,6 +20,7 @@ class TaskContainer extends StatefulWidget {
 class _TaskContainerState extends State<TaskContainer> {
   @override
   Widget build(BuildContext context) {
+    var authprovider= Provider.of<AuthProvider>(context);
     var provider = Provider.of<AppConfigProvider>(context);
     return Container(
       margin: EdgeInsets.all(12),
@@ -36,9 +38,10 @@ class _TaskContainerState extends State<TaskContainer> {
             // A SlidableAction can have an icon and/or a label.
             SlidableAction(
               onPressed: (context) {
-                FireBaseMethods.deleteTaskFromFireStore(widget.task).timeout(
-                    Duration(milliseconds: 500),
-                    onTimeout: () => provider.getTasksFromFireBase());
+                FireBaseMethods.deleteTaskFromFireStore(widget.task,authprovider.user?.id??"").then((value) {
+                  return  provider.getTasksFromFireBase(authprovider.user?.id??"");
+                },);
+
               },
               backgroundColor: Color(0xFFFE4A49),
               foregroundColor: Colors.white,
@@ -92,26 +95,31 @@ class _TaskContainerState extends State<TaskContainer> {
                         ),
                       ],
                     ),
-                  ),widget.task.isdone==false?
+                  ),
                   ElevatedButton(
                     onPressed: () {
+                      if(widget.task.isdone==false){
                       widget.task.isdone=true;
-                     FireBaseMethods.getTasksCollection().doc(widget.task.id).update({"isDone":true});
+                     FireBaseMethods.getTasksCollection(authprovider.user?.id??"").doc(widget.task.id).update({"isDone":true});}
+                      else{
+                        widget.task.isdone=false;
+                        FireBaseMethods.getTasksCollection(authprovider.user?.id??"").doc(widget.task.id).update({"isDone":false});
+                      }
                       setState(() {
 
                       });
                     },
-                    child: Icon(
+                    child:widget.task.isdone==false? Icon(
                       Icons.check,
                       color: MyTheme.whiteColor,
                       size: 40,
-                    ),
+                    ):Text("Done ! ", style: TextStyle(fontWeight:FontWeight.bold,fontSize: 25,color: MyTheme.greenColor)),
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: MyTheme.primartight,
+                        backgroundColor:widget.task.isdone==false? MyTheme.primartight:Colors.white,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15))),
-                  ):
-                      Text("Done ! ", style: TextStyle(fontWeight:FontWeight.bold,fontSize: 25,color: MyTheme.greenColor),)
+                  )
+
                 ],
               ), 
             ),

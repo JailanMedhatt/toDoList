@@ -19,16 +19,19 @@ class _modeBottomSheetState extends State<ModeBottomSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           InkWell(
-            onTap: ()=>provider.changeTheme(ThemeMode.light),
+            onTap: (){provider.changeTheme(ThemeMode.light);
+              Navigator.pop(context);},
             child: provider.isDark()
                 ? getUnselctedItem(AppLocalizations.of(context)!.light)
                 : getSelectedItem(AppLocalizations.of(context)!.light),
           ),
           InkWell(
-            onTap: ()=>provider.changeTheme(ThemeMode.dark),
+            onTap: (){provider.changeTheme(ThemeMode.dark);
+            Navigator.pop(context);},
             child: provider.isDark()
                 ? getSelectedItem(AppLocalizations.of(context)!.dark):
                 getUnselctedItem(AppLocalizations.of(context)!.dark,
+
           )
           )
         ],

@@ -19,13 +19,14 @@ class _languageBottomSheetState extends State<languageBottomSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           InkWell(
-            onTap: ()=>provider.changeLanguage("en"),
+            onTap: (){provider.changeLanguage("en");
+            Navigator.pop(context);},
             child: provider.language == "en"
                 ? getSelectedItem(AppLocalizations.of(context)!.english)
                 : getUnselctedItem(AppLocalizations.of(context)!.english),
           ),
           InkWell(
-            onTap: ()=>provider.changeLanguage("ar"),
+            onTap: (){provider.changeLanguage("ar");Navigator.pop(context);},
             child: provider.language == "en"
                 ? getUnselctedItem(AppLocalizations.of(context)!.arabic):
                 getSelectedItem(AppLocalizations.of(context)!.arabic),
