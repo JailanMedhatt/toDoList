@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/MyTheme.dart';
-import 'package:todo/Task.dart';
+import 'package:todo/models/Task.dart';
 
 import 'package:todo/mainTap/TaskContainer.dart';
 import 'package:todo/providers/AppConfigProvider.dart';

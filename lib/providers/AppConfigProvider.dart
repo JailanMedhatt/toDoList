@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/FireBaseMethod.dart';
-import 'package:todo/Task.dart';
+import 'package:todo/models/Task.dart';
 
 class AppConfigProvider extends ChangeNotifier {
   List<Task> tasks = [];

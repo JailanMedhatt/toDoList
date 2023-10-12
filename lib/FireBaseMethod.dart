@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:todo/Task.dart';
-import 'package:todo/User.dart';
+import 'package:todo/models/Task.dart';
+import 'package:todo/models/User.dart';
 
 //CollectionReference<Task>
 class FireBaseMethods {

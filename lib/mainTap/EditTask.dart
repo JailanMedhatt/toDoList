@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/FireBaseMethod.dart';
 import 'package:todo/MyTheme.dart';
-import 'package:todo/Task.dart';
+import 'package:todo/models/Task.dart';
 import 'package:todo/providers/AppConfigProvider.dart';
 import 'package:todo/providers/AuthProvider.dart';
 

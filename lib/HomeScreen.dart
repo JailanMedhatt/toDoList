@@ -1,6 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todo/Login.dart';
+import 'package:todo/login&register/Login.dart';
 import 'package:todo/MyTheme.dart';
 import 'package:todo/mainTap/TasksTap.dart';
 import 'package:todo/mainTap/toAddWidget.dart';
@@ -35,10 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
           style:Theme.of(context).textTheme.titleLarge,
         ),
         actions: [
-          IconButton(onPressed: (){
+          IconButton(onPressed: () async{
             authprovider.user=null;
             provider.tasks=[];
             provider.selectedDate=DateTime.now();
+            await FirebaseAuth.instance.signOut();
             Navigator.of(context).pushReplacementNamed(Login.routeName);
           }, icon: Icon(Icons.logout))
         ],
